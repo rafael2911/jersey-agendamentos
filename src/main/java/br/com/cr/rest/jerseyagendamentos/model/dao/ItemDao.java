@@ -8,6 +8,7 @@ import br.com.cr.rest.jerseyagendamentos.exceptions.DaoException;
 import br.com.cr.rest.jerseyagendamentos.exceptions.ErrorCode;
 import br.com.cr.rest.jerseyagendamentos.model.domain.Item;
 
+
 public class ItemDao {
 	
 	public List<Item> findAll(){
