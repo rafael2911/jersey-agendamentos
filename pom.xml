@@ -6,7 +6,7 @@
 	<artifactId>jersey-agendamentos</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
-	
+
 	<properties>
 		<jersey.version>2.27</jersey.version>
 	</properties>
@@ -24,7 +24,7 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.40</version>
 		</dependency>
-		
+
 		<!-- Dependências do Jersey -->
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
@@ -41,9 +41,7 @@
 			<artifactId>jersey-hk2</artifactId>
 			<version>${jersey.version}</version>
 		</dependency>
-	
-	
-	
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>

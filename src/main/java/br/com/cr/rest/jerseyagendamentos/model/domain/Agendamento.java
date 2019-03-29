@@ -7,11 +7,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
 @Table(name="agendamentos")
@@ -22,11 +26,13 @@ public class Agendamento {
 	private Long id;
 	
 	@Column(name="data_hora_inicio", nullable=false)
-	@JsonFormat(pattern="dd/MM/yyyy hh:mm")
+	@JsonDeserialize(using=LocalDateDeserialize.class)
+	@JsonSerialize(using=LocalDateSerialize.class)
 	private LocalDateTime inicio;
 	
 	@Column(name="data_hora_fim", nullable=false)
-	@JsonFormat(pattern="dd/MM/yyyy hh:mm")
+	@JsonDeserialize(using=LocalDateDeserialize.class)
+	@JsonSerialize(using=LocalDateSerialize.class)
 	private LocalDateTime fim;
 	
 	@Column(nullable=false)
@@ -34,11 +40,12 @@ public class Agendamento {
 	private String motivo;
 	
 	@ManyToOne
-	@Column(name="usuario_id")
+	@JoinColumn(name="usuario_id")
+	@JsonIgnoreProperties(value={"username", "password", "role"})
 	private Usuario usuario;
 	
-	@ManyToOne
-	@Column(name="item_id")
+	@ManyToOne()
+	@JoinColumn(name="item_id")
 	private Item item;
 
 	public Long getId() {
@@ -87,6 +94,12 @@ public class Agendamento {
 
 	public void setItem(Item item) {
 		this.item = item;
+	}
+
+	@Override
+	public String toString() {
+		return "Agendamento [id=" + id + ", inicio=" + inicio + ", fim=" + fim + ", motivo=" + motivo + ", usuario="
+				+ usuario + ", item=" + item + "]";
 	}
 	
 }
