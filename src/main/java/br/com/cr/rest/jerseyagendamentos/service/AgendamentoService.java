@@ -17,6 +17,10 @@ public class AgendamentoService {
 	public List<Agendamento> findByUsuario(Long usuarioId){
 		return dao.findByUsuario(usuarioId);
 	}
+	
+	public List<Agendamento> findByItem(Long itemId){
+		return dao.findByItem(itemId);
+	}
 
 	public Agendamento save(Agendamento agendamento, Long usuarioId) {
 		Usuario usuario = new Usuario();
@@ -30,6 +34,11 @@ public class AgendamentoService {
 		usuario.setId(usuarioId);
 		agendamento.setUsuario(usuario);
 		return dao.update(agendamento);
+	}
+	
+	public Agendamento delete(Long agendamentoId, Long usuarioId) {
+		Agendamento agendamento = dao.delete(agendamentoId, usuarioId);
+		return agendamento;
 	}
 	
 }

@@ -44,6 +44,13 @@ public class DaoExceptionMapper implements ExceptionMapper<DaoException>  {
 					.build();
 		}
 		
+		if(exception.getCode() == ErrorCode.CONFLICT.getCode()) {
+			return Response.status(Status.CONFLICT)
+					.entity(error)
+					.type(MediaType.APPLICATION_JSON)
+					.build();
+		}
+		
 		return Response.status(Status.INTERNAL_SERVER_ERROR)
 				.entity(error)
 				.type(MediaType.APPLICATION_JSON)

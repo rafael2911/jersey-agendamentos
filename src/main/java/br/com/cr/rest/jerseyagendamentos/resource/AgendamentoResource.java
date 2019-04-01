@@ -3,6 +3,7 @@ package br.com.cr.rest.jerseyagendamentos.resource;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -28,6 +29,20 @@ public class AgendamentoResource {
 		return Response.ok().entity(agendamentos).build();
 	}
 	
+	@GET
+	@Path("usuarios/{usuarioId}")
+	public Response buscaPorUsuario(@PathParam("usuarioId") Long usuarioId) {
+		List<Agendamento> agendamentos = service.findByUsuario(usuarioId);
+		return Response.ok().entity(agendamentos).build();
+	}
+	
+	@GET
+	@Path("itens/{itemId}")
+	public Response buscaPorItem(@PathParam("itemId") Long itemId) {
+		List<Agendamento> agendamentos = service.findByItem(itemId);
+		return Response.ok().entity(agendamentos).build();
+	}
+	
 	@POST
 	@Path("{usuarioId}")
 	public Response salvar(@PathParam("usuarioId") Long usuarioId, Agendamento agendamento) {
@@ -35,18 +50,18 @@ public class AgendamentoResource {
 		return Response.ok().entity(agendamento).build();
 	}
 	
-	@GET
-	@Path("{usuarioId}")
-	public Response buscaPorUsuario(@PathParam("usuarioId") Long usuarioId) {
-		List<Agendamento> agendamentos = service.findByUsuario(usuarioId);
-		return Response.ok().entity(agendamentos).build();
-	}
-	
 	@PUT
 	@Path("{usuarioId}")
 	public Response atualizaAgendamento(@PathParam("usuarioId") Long usuarioId, Agendamento agendamento) {
 		service.update(agendamento, usuarioId);
 		return Response.ok().entity(agendamento).build();
+	}
+	
+	@DELETE
+	@Path("{agendamentoId}/usuarios/{usuarioId}")
+	public Response removeAgendamento(@PathParam("usuarioId") Long usuarioId, @PathParam("agendamentoId") Long agendamentoId){
+		service.delete(agendamentoId, usuarioId);
+		return Response.noContent().build();
 	}
 	
 }
