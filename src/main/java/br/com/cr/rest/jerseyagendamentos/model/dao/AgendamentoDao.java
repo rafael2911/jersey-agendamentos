@@ -25,6 +25,30 @@ public class AgendamentoDao {
 		return agendamentos;
 	}
 	
+	public List<Agendamento> findByUsuario(Long usuarioId){
+		
+		if(usuarioId <= 0) {
+			throw new DaoException("O id do usuário deve ser maior que zero!", ErrorCode.BAD_REQUEST);
+		}
+		
+		EntityManager em = JpaUtil.getEntityManager();
+		List<Agendamento> agendamentos;
+		
+		try {
+			agendamentos = em.createQuery("from Agendamento a "
+											+ "join fetch a.usuario "
+											+ "join fetch a.item "
+											+ "where a.usuario.id = :usuarioId", Agendamento.class)
+					.setParameter("usuarioId", usuarioId)
+					.getResultList();
+		}catch (RuntimeException ex) {
+			throw new DaoException("Erro ao listar agendamentos por usuário: " + ex.getMessage(), ErrorCode.SERVER_ERROR);
+		}
+		
+		return agendamentos;
+		
+	}
+	
 	public Agendamento save(Agendamento agendamento) {
 		if(!agendamentoIsValid(agendamento)) {
 			throw new DaoException("Agendamento com dados incompletos!", ErrorCode.BAD_REQUEST);

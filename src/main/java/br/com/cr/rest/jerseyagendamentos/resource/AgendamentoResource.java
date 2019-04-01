@@ -34,4 +34,11 @@ public class AgendamentoResource {
 		return Response.ok().entity(agendamento).build();
 	}
 	
+	@GET
+	@Path("{usuarioId}")
+	public Response buscaPorUsuario(@PathParam("usuarioId") Long usuarioId) {
+		List<Agendamento> agendamentos = service.findByUsuario(usuarioId);
+		return Response.ok().entity(agendamentos).build();
+	}
+	
 }

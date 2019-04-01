@@ -13,6 +13,10 @@ public class AgendamentoService {
 	public List<Agendamento> findAll(){
 		return dao.findAll();
 	}
+	
+	public List<Agendamento> findByUsuario(Long usuarioId){
+		return dao.findByUsuario(usuarioId);
+	}
 
 	public Agendamento save(Agendamento agendamento, Long usuarioId) {
 		Usuario usuario = new Usuario();
