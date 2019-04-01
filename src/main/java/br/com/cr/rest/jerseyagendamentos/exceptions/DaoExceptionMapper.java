@@ -37,10 +37,18 @@ public class DaoExceptionMapper implements ExceptionMapper<DaoException>  {
 					.build();
 		}
 		
+		if(exception.getCode() == ErrorCode.UNAUTHORIZED.getCode()) {
+			return Response.status(Status.UNAUTHORIZED)
+					.entity(error)
+					.type(MediaType.APPLICATION_JSON)
+					.build();
+		}
+		
 		return Response.status(Status.INTERNAL_SERVER_ERROR)
 				.entity(error)
 				.type(MediaType.APPLICATION_JSON)
 				.build();
+
 	}
 
 }

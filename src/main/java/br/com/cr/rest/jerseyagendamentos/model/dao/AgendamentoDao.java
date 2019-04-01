@@ -3,6 +3,9 @@ package br.com.cr.rest.jerseyagendamentos.model.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.ws.rs.NotAuthorizedException;
+
+import org.eclipse.jetty.server.Response;
 
 import br.com.cr.rest.jerseyagendamentos.exceptions.DaoException;
 import br.com.cr.rest.jerseyagendamentos.exceptions.ErrorCode;
@@ -83,6 +86,64 @@ public class AgendamentoDao {
 		}
 		
 		return agendamento;
+	}
+	
+	public Agendamento update(Agendamento agendamento) {
+		
+		if(agendamento.getId() <= 0) {
+			throw new DaoException("O id do agendamento deve ser maior que zero", ErrorCode.BAD_REQUEST);
+		}
+		
+		if(!agendamentoIsValid(agendamento)) {
+			throw new DaoException("Agendamento com dados incompletos!", ErrorCode.BAD_REQUEST);
+		}
+		
+		if(agendamento.getItem().getId() <= 0 || agendamento.getUsuario().getId() <= 0) {
+			throw new DaoException("O id do usuário e do item devem ser maior que zero!", ErrorCode.BAD_REQUEST);
+		}
+		
+		EntityManager em = JpaUtil.getEntityManager();
+		Agendamento agendamentoManaged;
+		
+		try {
+			em.getTransaction().begin();
+
+			agendamento.setItem(em.find(Item.class, agendamento.getItem().getId()));
+			agendamento.setUsuario(em.find(Usuario.class,  agendamento.getUsuario().getId()));
+			
+			agendamentoManaged = em.find(Agendamento.class, agendamento.getId());
+			
+			if(agendamentoManaged.getUsuario().getId() != agendamento.getUsuario().getId()) {
+				throw new NotAuthorizedException("O usuário informado na URL não é o proprietário do agendamento!", Response.SC_UNAUTHORIZED);
+			}
+			
+			
+			
+			agendamentoManaged.setInicio(agendamento.getInicio());
+			agendamentoManaged.setFim(agendamento.getFim());
+			agendamentoManaged.setMotivo(agendamento.getMotivo());
+			agendamentoManaged.setItem(agendamento.getItem());
+			agendamentoManaged.setUsuario(agendamento.getUsuario());
+			
+			
+			
+			em.getTransaction().commit();
+			
+		}catch (NullPointerException ex) {
+			em.getTransaction().rollback();
+			throw new DaoException("O usuário e o item não podem ser nulos!", ErrorCode.NOT_FOUND);
+		}catch (NotAuthorizedException ex) {
+			em.getTransaction().rollback();
+			throw new DaoException(ex.getMessage(), ErrorCode.UNAUTHORIZED);
+		}catch (RuntimeException ex) {
+			em.getTransaction().rollback();
+			throw new DaoException("Erro ao atualizar agendamento: " + ex.getMessage(), ErrorCode.SERVER_ERROR);
+		}finally {
+			em.close();
+		}
+		
+		return agendamentoManaged;
+		
 	}
 	
 	private boolean agendamentoIsValid(Agendamento agendamento) {

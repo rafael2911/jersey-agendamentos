@@ -25,4 +25,11 @@ public class AgendamentoService {
 		return dao.save(agendamento);
 	}
 	
+	public Agendamento update(Agendamento agendamento, Long usuarioId) {
+		Usuario usuario = new Usuario();
+		usuario.setId(usuarioId);
+		agendamento.setUsuario(usuario);
+		return dao.update(agendamento);
+	}
+	
 }
